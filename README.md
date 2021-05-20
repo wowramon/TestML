@@ -1,5 +1,5 @@
 # TestML
-# Bienvenidos a la Documentación del Script
+# Bienvenidos a la Documentación del Script ExmaP1.py
 
 
 Empezamos 
@@ -20,3 +20,6 @@ pip install requests
 
 Una vez Instalados los módulos, Ejecutamos el script; Nos dará a escoger dos opciones, seguimos los pasos 
 Por ultimo obtendremos el fichero.log
+
+
+En la Carpeta Parte 2 tenemos el archivo SQL y la respuesta de las ultimas preguntas.
