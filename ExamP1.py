@@ -35,6 +35,37 @@ def InputNameF(): #Repetimos funcion pero esta vez para darle un nombre al archi
      
     return Fichename
 
+def Menu():
+
+    print('Bienvenido, Para comenzar debe escoger entre una de las opciones')
+    print('Presione 1 para Buscar un solo Usuario')         # Pequeño Menu del script
+    print('Presione 2 para Buscar una Lista de Usuarios')
+
+    option = int(input('Elija entre las Opciones mencionadas:\n')) #Tomamos el Input de las opciones
+
+    if option == 1: #opcion 1
+
+        Seller_id = Inputseller()  # Iniciamos la funcion y guardamos lo que retorna en una variable
+        processing(Seller_id)  # Iniciamos el metodo central del codigo y le pasamos el Seller_id como parametro
+        print('Generando archivo...')
+        print('Archivo Generado con Exito!!')
+
+    elif option == 2: #opcion 2
+        print('DEBE INGRESAR LOS CAMPOS EN UNA SOLA LINEA SEPARADOS POR ESPACIO EJEM: ')
+        print('15236 253253 .... N_ID ')
+        ListID = list(map(int, input("Ingresar Todos los Seller_ID que desea Buscar:\n ").split())) #Input que toma multiples campos es separado por la funcion split
+
+        for i in range(len(ListID)): #Guardamos el Input como una lista y la recorremos con for range
+            Seller_id = ListID[i]  # Iniciamos la funcion indexando cada uno de los elementos de la lista
+            processing(Seller_id)  # Iniciamos el metodo central del codigo y le pasamos el Seller_id como parametro
+            print('Generando archivo...')
+        print('Archivos Generados con Exito!!')
+
+    else:
+        print(str(option)+" No es valido") #En caso de escoger una opcion no valida
+        Menu() #Volvemos a iniciar el menu
+
+
 def processing(Seller): #Metodo que hace el request al Api e inicia el recorrido por el json
 
     curl = ' https://api.mercadolibre.com/sites/' + SITE_ID + '/search?seller_id=' + str(Seller) + ''  # creamos el cURL
@@ -83,35 +114,6 @@ def Search(listJson, NameFichero):  # creamos un metodo para crear y registrar e
 
 
 
-def Menu():
-
-    print('Bienvenido, Para comenzar debe escoger entre una de las opciones')
-    print('Presione 1 para Buscar un solo Usuario')         # Pequeño Menu del script
-    print('Presione 2 para Buscar una Lista de Usuarios')
-
-    option = int(input('Elija entre las Opciones mencionadas:\n')) #Tomamos el Input de las opciones
-
-    if option == 1: #opcion 1
-
-        Seller_id = Inputseller()  # Iniciamos la funcion y guardamos lo que retorna en una variable
-        processing(Seller_id)  # Iniciamos el metodo central del codigo y le pasamos el Seller_id como parametro
-        print('Generando archivo...')
-        print('Archivo Generado con Exito!!')
-
-    elif option == 2: #opcion 2
-        print('DEBE INGRESAR LOS CAMPOS EN UNA SOLA LINEA SEPARADOS POR ESPACIO EJEM: ')
-        print('15236 253253 .... N_ID ')
-        ListID = list(map(int, input("Ingresar Todos los Seller_ID que desea Buscar:\n ").split())) #Input que toma multiples campos es separado por la funcion split
-
-        for i in range(len(ListID)): #Guardamos el Input como una lista y la recorremos con for range
-            Seller_id = ListID[i]  # Iniciamos la funcion indexando cada uno de los elementos de la lista
-            processing(Seller_id)  # Iniciamos el metodo central del codigo y le pasamos el Seller_id como parametro
-            print('Generando archivo...')
-        print('Archivos Generados con Exito!!')
-
-    else:
-        print(str(option)+" No es valido") #En caso de escoger una opcion no valida
-        Menu() #Volvemos a iniciar el menu
 
 
 def main():
