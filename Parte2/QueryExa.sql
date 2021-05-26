@@ -100,6 +100,20 @@ CREATE
     END$$ -- En este caso multiplicamos los campos para obtener el total 
 DELIMITER ;
 
+ DELIMITER $$
+CREATE PROCEDURE SumaTotal()
+BEGIN
 
-CALL CostoTotal(2); -- LLamamos el Store Procedure y enviamos como INPUT el ID del carrier al que queremos calcular
-Select Sum(Total) from CostoEn -- Total de Gasto para cada Carrier
+DECLARE counter INT default 1;
+
+WHILE  counter <= (select count(CarrierID) from Carrier) DO -- WHILE counter sea menor o igual a la cantidad de CARRIER en la tabla
+
+		CALL CostoTotal(counter);  -- LLamamos el Store Procedure y enviamos como INPUT el ID del carrier al que queremos calcular
+		set counter = counter + 1; -- sumamos 1 al contador por cada iterecion 
+END WHILE;
+END$$
+DELIMITER ;
+
+CALL SumaTotal(); -- Llamamos al Store Procedure
+
+Select Sum(Total) from CostoEn -- Total de Gasto 
