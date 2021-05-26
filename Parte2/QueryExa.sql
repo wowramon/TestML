@@ -74,7 +74,7 @@ Select * from CantDenvios ;
 CREATE PROCEDURE CostoTotal (ID INT) -- Creamos un Store Procedure, Pedimos el parametro ID para ver el coste de cada carrier
  
 begin -- Iniciamos el metodo
- 
+  
    INSERT Into CostoEn (Capacidad,Costo,Total) values -- Insertamos los valores 
  ( (SELECT Capacity FROM Carrier WHERE CarrierID = ID) , (SELECT Costo FROM Costos Where CarrierID =ID and Zona = 'AMBA'), null),
  ((SELECT Capacity FROM Carrier WHERE CarrierID = ID), (SELECT Costo FROM Costos Where CarrierID =ID and Zona = 'Bs as'), null),
@@ -105,9 +105,8 @@ CREATE PROCEDURE SumaTotal()
 BEGIN
 
 DECLARE counter INT default 1;
-
+delete from CostoEn;   -- Nos aseguramos de que la tabla este vacia asi evitamos la suma reiterada de valores 
 WHILE  counter <= (select count(CarrierID) from Carrier) DO -- WHILE counter sea menor o igual a la cantidad de CARRIER en la tabla
-
 		CALL CostoTotal(counter);  -- LLamamos el Store Procedure y enviamos como INPUT el ID del carrier al que queremos calcular
 		set counter = counter + 1; -- sumamos 1 al contador por cada iterecion 
 END WHILE;
@@ -117,3 +116,37 @@ DELIMITER ;
 CALL SumaTotal(); -- Llamamos al Store Procedure
 
 Select Sum(Total) from CostoEn -- Total de Gasto 
+
+
+-- Segunda Pregunta 
+
+
+/* Propongo Agregar mas Carriers para cumplir con todos los Envios 
+ Al tener 3.000.000 con la misma capacidad que los carrier A y B
+ 
+ Pero teniendo 3.000.000 ¿Cuantos Carriers debemos agregar?
+*/
+
+DELIMITER $$
+CREATE PROCEDURE InsertCarrier() -- Creamos Store Procedure
+BEGIN
+Declare Counter Int default 4; -- Declaramos un contador que nos ayudara a indexar los Carriers
+
+WHILE (Select Sum(Total) from CostoEn)  <= 3000000 DO
+
+		insert INTO Carrier  (Name , Capacity) Values (concat('Carrier A',Counter) , 10000); -- Agregamos nuevo Carrier
+        Insert Into Costos ( CarrierID, Zona,Costo,Tiempodentrega) 
+ Values ((SELECT CarrierID from Carrier where CarrierID = Counter),'AMBA',10, 3),  -- Agregramos Nuevos Campos a la tabla Costos
+         ((SELECT CarrierID from Carrier where CarrierID = Counter),'Bs as',20, 5), -- Digamos que los nuevos Carrier tiene las mimas condicones
+         ((SELECT CarrierID from Carrier where CarrierID = Counter),'Resto',50, 7); -- Que el Carrier A
+         CALL SumaTotal();   -- LLamamos el Store Procedure y enviamos como INPUT el ID del carrier al que queremos calcular
+         set Counter  = Counter + 1; -- Sumamos al contador
+END WHILE;
+END$$
+DELIMITER ;
+
+Call InsertCarrier(); -- LLamamos el Store procedure
+
+select Sum(Total) from CostoEn; -- Gasto total de los 3Millones
+
+Select * from Carrier -- Verificamos el total de Carrier Contratados
